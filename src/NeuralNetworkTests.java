@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Random;
 
-public class NeuralNetworkTests {
+class NeuralNetworkTests {
     public static void main(String[] args) {
         NeuralNetwork nn = new NeuralNetwork(2, 4, 1, 0.1);
         Random random = new Random();
