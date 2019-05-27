@@ -3,20 +3,27 @@ import java.util.function.Function;
 
 public class NeuralNetwork {
 
-    private int inputNodes;
-    private int hiddenNodes;
-    private int outputNodes;
+    // Array with the size of of each column of the neural network
+    // Array size should be the amount of columns (min 3)
+    // Array at index 0 is number of inputs, index size - 1 is number of outputs
+    // Array at any other index is a hidden node
+    private int[] nodes;
 
+    // The rate at which the network learns
     private double learningRate;
 
-    private Matrix weightInputHidden;
-    private Matrix weightHiddenOutput;
+    // Array with the weights between each column of the neural network
+    // Array size should be the amount amount of columns - 1
+    // Array at index 0 is input to hidden, index size - 1 hidden to output
+    private Matrix[] weights;
 
-    private Matrix biasHidden;
-    private Matrix biasOutput;
+    // Array with the bias for each column of the neural network expect the inputs
+    // Array size should be the amount amount of columns - 1
+    // Array at index 0 is hidden, index size - 1 is output
+    private Matrix[] bias;
 
-    private Sigmoid sigmoid;
-    private DSigmoid dSigmoid;
+    private static Sigmoid sigmoid = new Sigmoid();
+    private static DSigmoid dSigmoid = new DSigmoid();
 
     /**
      * Constructor
@@ -24,7 +31,7 @@ public class NeuralNetwork {
      * @param hiddenNodes number of hidden nodes
      * @param outputNodes number of outputs
      */
-    NeuralNetwork(int inputNodes, int hiddenNodes, int outputNodes) {
+    public NeuralNetwork(int inputNodes, int hiddenNodes, int outputNodes) {
         this(inputNodes, hiddenNodes, outputNodes, 0.1);
     }
 
@@ -35,24 +42,44 @@ public class NeuralNetwork {
      * @param outputNodes number of outputs
      * @param learningRate rate the network learns
      */
-    NeuralNetwork(int inputNodes, int hiddenNodes, int outputNodes, double learningRate) {
-        this.inputNodes = inputNodes;
-        this.hiddenNodes = hiddenNodes;
-        this.outputNodes = outputNodes;
+    public NeuralNetwork(int inputNodes, int hiddenNodes, int outputNodes, double learningRate) {
+        this(inputNodes, new int[] {hiddenNodes}, outputNodes, learningRate);
+    }
+
+    /**
+     * Constructor with learning rate
+     * @param inputNodes number of inputs
+     * @param hiddenNodes number of hidden nodes and amount of hidden columns
+     * @param outputNodes number of outputs
+     * @param learningRate rate the network learns
+     */
+    public NeuralNetwork(int inputNodes, int[] hiddenNodes, int outputNodes, double learningRate) {
+        // size of neural network
+        int size = hiddenNodes.length + 2;
+
+        // initialize the nodes
+        nodes = new int[size];
+        nodes[0] = inputNodes;
+        for (int i = 1; i < size - 1; i++) {
+            nodes[i] = hiddenNodes[i - 1];
+        }
+        nodes[size - 1] = outputNodes;
+
+        // initialize the weights
+        weights = new Matrix[size - 1];
+        for (int i = 0; i < weights.length; i++) {
+            weights[i] = new Matrix(nodes[i + 1], nodes[i]);
+            weights[i].randomizeValues();
+        }
+
+        // initialize the bias
+        bias = new Matrix[size - 1];
+        for (int i = 0; i < bias.length; i++) {
+            bias[i] = new Matrix(nodes[i + 1], 1);
+            bias[i].randomizeValues();
+        }
+
         this.learningRate = learningRate;
-
-        weightInputHidden = new Matrix(hiddenNodes, inputNodes);
-        weightHiddenOutput = new Matrix(outputNodes, hiddenNodes);
-        weightInputHidden.randomizeValues();
-        weightHiddenOutput.randomizeValues();
-
-        biasHidden = new Matrix(hiddenNodes, 1);
-        biasOutput = new Matrix(outputNodes,1);
-        biasHidden.randomizeValues();
-        biasOutput.randomizeValues();
-
-        sigmoid = new Sigmoid();
-        dSigmoid = new DSigmoid();
     }
 
     /**
@@ -61,32 +88,45 @@ public class NeuralNetwork {
      * @return an ArrayList of output numbers
      */
     public Matrix feedforward(Matrix inputs) {
-        return getOutput(getHidden(inputs));
+        return backpropogate(backpropogate(inputs, weights[0], bias[0]), weights[1], bias[1]);
     }
 
     public Matrix feedforward(ArrayList<Double> inputs) {
         return feedforward(Matrix.fromArray(inputs));
     }
 
-    public Matrix getHidden(Matrix inputs){
+    /*public Matrix getHidden(Matrix inputs){
         // Generate the hidden
         Matrix hidden = weightInputHidden.matrixProduct(inputs);
         hidden = hidden.add(biasHidden);
         // Activation
         return hidden.map(sigmoid);
-    }
+    }*/
 
-    public Matrix getOutput(Matrix hidden) {
+    /*public Matrix getOutput(Matrix hidden){
         // Generate the output
         Matrix output = weightHiddenOutput.matrixProduct(hidden);
         output = output.add(biasOutput);
         // Activation
         return output.map(sigmoid);
+    }*/
+
+    public Matrix backpropogate(Matrix inputs, Matrix weights, Matrix bias) {
+        //Generate the output
+        Matrix output = weights.matrixProduct(inputs);
+        output = output.add(bias);
+        // Activation
+        return output.map(sigmoid);
     }
 
+    /*public void train(Matrix inputs, Matrix targets) {
+
+        }
+    }*/
+
     public void train(Matrix inputs, Matrix targets) {
-        Matrix hiddens = getHidden(inputs);
-        Matrix outputs = getOutput(hiddens);
+        Matrix hiddens = backpropogate(inputs, weights[0], bias[0]);
+        Matrix outputs = backpropogate(hiddens, weights[1], bias[1]);
 
         // Error = targets - outputs
         // Calculate the output errors
@@ -103,13 +143,13 @@ public class NeuralNetwork {
         Matrix weightHiddenOutputDeltas = gradientsOutput.matrixProduct(hiddensT);
 
         // Adjust the hidden output weights
-        weightHiddenOutput = weightHiddenOutput.add(weightHiddenOutputDeltas);
+        weights[1] = weights[1].add(weightHiddenOutputDeltas);
 
         // Adjusts the output bias's
-        biasOutput = biasOutput.add(gradientsOutput);
+        bias[1] = bias[1].add(gradientsOutput);
 
         // Calculate the hidden errors
-        Matrix weightHiddenOutputT = weightHiddenOutput.transpose();
+        Matrix weightHiddenOutputT = weights[1].transpose();
         Matrix hiddenErrors = weightHiddenOutputT.matrixProduct(outputErrors);
 
         // Calculate hidden gradient
@@ -122,10 +162,10 @@ public class NeuralNetwork {
         Matrix weightInputHiddenDeltas = gradientsHidden.matrixProduct(inputsT);
 
         // Adjust the input hidden weights
-        weightInputHidden = weightInputHidden.add(weightInputHiddenDeltas);
+        weights[0] = weights[0].add(weightInputHiddenDeltas);
 
         // Adjusts the hidden bias's
-        biasHidden = biasHidden.add(gradientsHidden);
+        bias[0] = bias[0].add(gradientsHidden);
     }
 
 

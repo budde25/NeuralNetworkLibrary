@@ -3,7 +3,7 @@ import java.util.Random;
 
 class NeuralNetworkTests {
     public static void main(String[] args) {
-        NeuralNetwork nn = new NeuralNetwork(2, 4, 1, 0.1);
+        NeuralNetwork nn = new NeuralNetwork(2, 4, 1, 1);
         Random random = new Random();
 
         for (int i = 0; i < 100000; i++) {
