@@ -3,6 +3,9 @@ import java.util.function.Function;
 
 public class NeuralNetwork {
 
+    // The amount of nodes columns
+    private int size;
+
     // Array with the size of of each column of the neural network
     // Array size should be the amount of columns (min 3)
     // Array at index 0 is number of inputs, index size - 1 is number of outputs
@@ -55,7 +58,7 @@ public class NeuralNetwork {
      */
     public NeuralNetwork(int inputNodes, int[] hiddenNodes, int outputNodes, double learningRate) {
         // size of neural network
-        int size = hiddenNodes.length + 2;
+        size = hiddenNodes.length + 2;
 
         // initialize the nodes
         nodes = new int[size];
@@ -84,32 +87,29 @@ public class NeuralNetwork {
 
     /**
      * Simple feedforward algorithm for get outputs based on inputs
-     * @param inputs a Matrix of input numbers
-     * @return an ArrayList of output numbers
+     * @param inputs a Matrix of input doubles
+     * @return an Matrix of output doubles
      */
     public Matrix feedforward(Matrix inputs) {
-        return backpropogate(backpropogate(inputs, weights[0], bias[0]), weights[1], bias[1]);
+        Matrix output = null;
+        for (int i = 0; i < size - 1; i++) {
+            if (i == 0) {
+                output = backpropogate(inputs, weights[0], bias[0]);
+            } else {
+                output = backpropogate(output, weights[i], bias[i]);
+            }
+        }
+        return output;
     }
 
+    /**
+     * Simple feedforward algorithm for get outputs based on inputs
+     * @param inputs a ArrayList of input doubles
+     * @return a Matrix of output doubles
+     */
     public Matrix feedforward(ArrayList<Double> inputs) {
         return feedforward(Matrix.fromArray(inputs));
     }
-
-    /*public Matrix getHidden(Matrix inputs){
-        // Generate the hidden
-        Matrix hidden = weightInputHidden.matrixProduct(inputs);
-        hidden = hidden.add(biasHidden);
-        // Activation
-        return hidden.map(sigmoid);
-    }*/
-
-    /*public Matrix getOutput(Matrix hidden){
-        // Generate the output
-        Matrix output = weightHiddenOutput.matrixProduct(hidden);
-        output = output.add(biasOutput);
-        // Activation
-        return output.map(sigmoid);
-    }*/
 
     public Matrix backpropogate(Matrix inputs, Matrix weights, Matrix bias) {
         //Generate the output
@@ -119,59 +119,87 @@ public class NeuralNetwork {
         return output.map(sigmoid);
     }
 
-    /*public void train(Matrix inputs, Matrix targets) {
-
-        }
-    }*/
-
+    /**
+     * Trains the network given a Matrix of inputs and a Matrix of target Values
+     * @param inputs a Matrix of inputs
+     * @param targets a Matrix of correct answers
+     */
     public void train(Matrix inputs, Matrix targets) {
-        Matrix hiddens = backpropogate(inputs, weights[0], bias[0]);
-        Matrix outputs = backpropogate(hiddens, weights[1], bias[1]);
+        // Array with all the networks values starting at hidden 1 though the output
+        Matrix[] values = new Matrix[size - 1];
+        for (int i = 0; i < values.length; i++) {
+            if (i == 0) {
+                values[0] = backpropogate(inputs, weights[0], bias[0]);
+            } else {
+                values[i] = backpropogate(values[i - 1], weights[i], bias[i]);
+            }
+        }
 
-        // Error = targets - outputs
-        // Calculate the output errors
-        Matrix outputErrors = targets.subtract(outputs);
+        // Main training loop
+        Matrix previousError = null;
+        for (int i = 0; i < values.length; i++) {
+            // Error = target - output, then weight matrix product previous error
+            // i = 0 = output error, i = 1 = highest hidden error, etc
+            Matrix error;
+            if (i == 0) {
+                error = previousError = targets.subtract(values[values.length - 1]);
+            } else {
+                Matrix weight = weights[weights.length - i].transpose();
+                error = weight.matrixProduct(previousError);
+                previousError = error;
+            }
 
-        // Gradient  = outputs * ( 1- outputs)
-        // Calculate output gradient
-        Matrix gradientsOutput = outputs.map(dSigmoid);
-        gradientsOutput = gradientsOutput.multiply(outputErrors);
-        gradientsOutput = gradientsOutput.multiply(learningRate);
+            // gradient = (Error * ( 1 - node)) * learning rate
+            // i = 0 = output, i = 1 = highest hidden, etc
+            Matrix gradient = values[values.length - 1 - i].map(dSigmoid);
+            gradient = gradient.multiply(error);
+            gradient = gradient.multiply(learningRate);
 
-        // Calculate hidden output deltas
-        Matrix hiddensT = hiddens.transpose();
-        Matrix weightHiddenOutputDeltas = gradientsOutput.matrixProduct(hiddensT);
+            // delta = gradient matrix product transposed node
+            // i = 0 = highest hidden to output, i = 1 = second highest hidden to highest hidden
+            Matrix transposed;
+            if (i == values.length - 1) {
+                transposed = inputs.transpose();
+            } else {
+                transposed = values[values.length - 2 - i].transpose();
+            }
+            Matrix delta = gradient.matrixProduct(transposed);
 
-        // Adjust the hidden output weights
-        weights[1] = weights[1].add(weightHiddenOutputDeltas);
 
-        // Adjusts the output bias's
-        bias[1] = bias[1].add(gradientsOutput);
-
-        // Calculate the hidden errors
-        Matrix weightHiddenOutputT = weights[1].transpose();
-        Matrix hiddenErrors = weightHiddenOutputT.matrixProduct(outputErrors);
-
-        // Calculate hidden gradient
-        Matrix gradientsHidden = hiddens.map(dSigmoid);
-        gradientsHidden = gradientsHidden.multiply(hiddenErrors);
-        gradientsHidden = gradientsHidden.multiply(learningRate);
-
-        // Calculate input hidden deltas
-        Matrix inputsT = inputs.transpose();
-        Matrix weightInputHiddenDeltas = gradientsHidden.matrixProduct(inputsT);
-
-        // Adjust the input hidden weights
-        weights[0] = weights[0].add(weightInputHiddenDeltas);
-
-        // Adjusts the hidden bias's
-        bias[0] = bias[0].add(gradientsHidden);
+            // Adjust the weights and the bias
+            weights[weights.length - 1 - i] = weights[weights.length - 1 - i].add(delta);
+            bias[bias.length - 1 - i] = bias[weights.length - 1 - i].add(gradient);
+        }
     }
 
-
-    public void train(ArrayList<Double> inputs, ArrayList<Double> targets) {
+    /**
+     * Trains the network given a ArrayList double of inputs and answers
+     * @param inputs the double inputs
+     * @param targets the correct values
+     */
+    public void trainDouble(ArrayList<Double> inputs, ArrayList<Double> targets) {
         train(Matrix.fromArray(inputs), Matrix.fromArray(targets));
     }
+
+    /**
+     * Trains the network given a ArrayList integer of inputs and answers
+     * @param inputs the integer inputs
+     * @param targets the correct values
+     */
+    public void trainInteger(ArrayList<Integer> inputs, ArrayList<Integer> targets) {
+        ArrayList<Double> input = new ArrayList<>(inputs.size());
+        ArrayList<Double> target = new ArrayList<>(targets.size());
+
+        for (int i = 0; i < inputs.size(); i++) {
+            input.add((double)inputs.get(i));
+        }
+        for (int i = 0; i < targets.size(); i++) {
+            target.add((double)targets.get(i));
+        }
+
+        train(Matrix.fromArray(input), Matrix.fromArray(target));
+    }
+
 }
 
 /**

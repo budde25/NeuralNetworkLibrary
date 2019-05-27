@@ -257,7 +257,7 @@ public class Matrix {
         ArrayList<Double> output = new ArrayList<>();
         for (int i = 0; i < rows; i++){
             for (int j = 0; j < columns; j++) {
-                output.add(getValue(i,j));
+                output.add(getValue(i, j));
             }
         }
         return output;
