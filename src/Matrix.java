@@ -1,8 +1,9 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.function.Function;
 
-public class Matrix {
+public class Matrix implements Serializable {
 
     private int rows;
     private int columns;

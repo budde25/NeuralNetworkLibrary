@@ -1,9 +1,10 @@
+import java.io.*;
 import java.util.ArrayList;
 import java.util.function.Function;
 
-public class NeuralNetwork {
+public class NeuralNetwork implements Serializable {
 
-    // The amount of nodes columns
+    // The amount of node columns
     private int size;
 
     // Array with the size of of each column of the neural network
@@ -198,6 +199,54 @@ public class NeuralNetwork {
         }
 
         train(Matrix.fromArray(input), Matrix.fromArray(target));
+    }
+
+    /**
+     * serializes the state of the network to a file, filename.ser
+     * @param filename the name of the file to save
+     * @return if file successfully saves
+     */
+    public boolean saveNetwork(String filename) {
+        try {
+            // Serialize current object
+            FileOutputStream fileOutputStream = new FileOutputStream(filename + ".ser");
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(this);
+
+            // Closing to avoid memory leaks
+            objectOutputStream.close();
+            fileOutputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+
+
+    /**
+     * loads the state of a network from a file
+     * @param filename the name of the file
+     * @return the new Neural Network object
+     */
+    public static NeuralNetwork loadNetwork(String filename) {
+        NeuralNetwork nn = null;
+        try {
+            if (!filename.contains(".ser")) {
+                filename += ".ser";
+            }
+            FileInputStream fileInputStream = new FileInputStream(filename);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+
+            nn = (NeuralNetwork)objectInputStream.readObject();
+
+            fileInputStream.close();
+            objectInputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return nn;
     }
 
 }
