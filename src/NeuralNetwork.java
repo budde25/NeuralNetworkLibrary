@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.function.Function;
 
-public class NeuralNetwork implements Serializable {
+public class NeuralNetwork implements Serializable{
 
     // The amount of node columns
     private int size;
@@ -124,8 +124,9 @@ public class NeuralNetwork implements Serializable {
      * Trains the network given a Matrix of inputs and a Matrix of target Values
      * @param inputs a Matrix of inputs
      * @param targets a Matrix of correct answers
+     * @return a Matrix of output doubles
      */
-    public void train(Matrix inputs, Matrix targets) {
+    public Matrix train(Matrix inputs, Matrix targets) {
         // Array with all the networks values starting at hidden 1 though the output
         Matrix[] values = new Matrix[size - 1];
         for (int i = 0; i < values.length; i++) {
@@ -171,6 +172,9 @@ public class NeuralNetwork implements Serializable {
             weights[weights.length - 1 - i] = weights[weights.length - 1 - i].add(delta);
             bias[bias.length - 1 - i] = bias[weights.length - 1 - i].add(gradient);
         }
+
+        // Return the last value of values, the output
+        return values[values.length - 1];
     }
 
     /**
