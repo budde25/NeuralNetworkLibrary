@@ -127,6 +127,10 @@ public class NeuralNetwork implements Serializable{
      * @return a Matrix of output doubles
      */
     public Matrix train(Matrix inputs, Matrix targets) {
+        if (targets.toArray().size() != nodes[size - 1]) {
+            throw new IllegalStateException("Error: targets size does not match the amount of output nodes");
+        }
+
         // Array with all the networks values starting at hidden 1 though the output
         Matrix[] values = new Matrix[size - 1];
         for (int i = 0; i < values.length; i++) {
@@ -227,8 +231,6 @@ public class NeuralNetwork implements Serializable{
         return true;
     }
 
-
-
     /**
      * loads the state of a network from a file
      * @param filename the name of the file
@@ -253,6 +255,17 @@ public class NeuralNetwork implements Serializable{
         return nn;
     }
 
+    /**
+     * gets the network size
+     * @return the size of the network aka the columns
+     */
+    public int getSize() {
+        return size;
+    }
+
+    public int getNodes(int column) {
+        return nodes[column];
+    }
 }
 
 /**
