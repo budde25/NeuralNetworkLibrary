@@ -218,6 +218,8 @@ public class NeuralNetwork implements Serializable{
      * @return if file successfully saves
      */
     public boolean saveNetwork(String filename) {
+        File file = new File("saved");
+        if (!file.exists()) file.mkdir();
         try {
             // Serialize current object
             FileOutputStream fileOutputStream = new FileOutputStream("saved" + File.separator + filename + ".ser");
