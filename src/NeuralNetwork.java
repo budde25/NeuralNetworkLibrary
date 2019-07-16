@@ -16,6 +16,9 @@ public class NeuralNetwork implements Serializable{
     // The rate at which the network learns
     private double learningRate;
 
+    // The accuracy of the network in percentage form
+    private double accuracy;
+
     // Array with the weights between each column of the neural network
     // Array size should be the amount amount of columns - 1
     // Array at index 0 is input to hidden, index size - 1 hidden to output
@@ -217,7 +220,7 @@ public class NeuralNetwork implements Serializable{
     public boolean saveNetwork(String filename) {
         try {
             // Serialize current object
-            FileOutputStream fileOutputStream = new FileOutputStream(filename + ".ser");
+            FileOutputStream fileOutputStream = new FileOutputStream("saved" + File.separator + filename + ".ser");
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(this);
 
@@ -242,7 +245,7 @@ public class NeuralNetwork implements Serializable{
             if (!filename.contains(".ser")) {
                 filename += ".ser";
             }
-            FileInputStream fileInputStream = new FileInputStream(filename);
+            FileInputStream fileInputStream = new FileInputStream("saved" + File.separator + filename);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 
             nn = (NeuralNetwork)objectInputStream.readObject();
@@ -263,8 +266,53 @@ public class NeuralNetwork implements Serializable{
         return size;
     }
 
+    /**
+     * gets the nodes in a column
+     * @param column the column of nodes
+     * @return number of nodes
+     */
     public int getNodes(int column) {
         return nodes[column];
+    }
+
+    /**
+     * gets the learning rate
+     * @return the rate the network learns at
+     */
+    public double getLearningRate() {
+        return learningRate;
+    }
+
+    /**
+     * sets the leaning rate
+     * @param learningRate how fast the network learns
+     */
+    public void setLearningRate(double learningRate) {
+        this.learningRate = learningRate;
+    }
+
+    /**
+     * gets the neural networks accuracy in percent
+     * @return the accuracy of the network
+     */
+    public double getAccuracy() {
+        return accuracy;
+    }
+
+    /**
+     * sets the accuracy of the network in decimal form
+     * @param accuracy the accuracy of the network
+     */
+    public void setAccuracyDecimal(double accuracy) {
+        this.accuracy = accuracy * 100;
+    }
+
+    /**
+     * sets the accuracy of the network in percentage
+     * @param accuracy the accuracy of the network
+     */
+    public void setAccuracyPercent(double accuracy) {
+        this.accuracy = accuracy;
     }
 }
 
