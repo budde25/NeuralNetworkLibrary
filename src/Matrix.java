@@ -1,14 +1,16 @@
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.function.Function;
 
 public class Matrix implements Serializable {
 
-    private int rows;
-    private int columns;
-    private ArrayList<ArrayList<Double>> data;
-    private Random random;
+    final private static Random random = new Random();
+
+    final private int rows;
+    final private int columns;
+    final private Double[][] data;
 
     /**
      * Default constructor
@@ -18,28 +20,8 @@ public class Matrix implements Serializable {
     Matrix(int rows, int cols) {
         this.rows = rows;
         this.columns = cols;
-        this.random = new Random();
-
-        this.data = new ArrayList<>(rows);
-
-        // Initialize every value of this matrix to null
-        for (int i = 0; i < rows; i++) {
-            data.add(new ArrayList<>(cols));
-            for (int j = 0; j < cols; j++) {
-                data.get(i).add(null);
-            }
-        }
-    }
-
-    /**
-     * Constructor with a seed
-     * @param rows number of rows in the matrix
-     * @param cols number of columns in the matrix
-     * @param seed a seed for the random generator
-     */
-    Matrix(int rows, int cols, long seed) {
-        this(rows, cols);
-        this.random .setSeed(seed);
+        this.data = new Double[rows][cols];
+        randomizeValues();
     }
 
     /**
@@ -144,11 +126,11 @@ public class Matrix implements Serializable {
      * @param col column
      * @param number value to set
      */
-    public void setValue(int row, int col, double number) {
+    void setValue(int row, int col, double number) {
         if (row > rows || col > columns)
-            throw new ArrayIndexOutOfBoundsException("Error: columns or row does not exit");
+            throw new ArrayIndexOutOfBoundsException("Error: columns or row does not exist");
 
-        data.get(row).set(col, number);
+        data[row][col] = number;
     }
 
     /**
@@ -159,9 +141,9 @@ public class Matrix implements Serializable {
      */
     public Double getValue(int row, int col) {
         if (row > rows || col > columns)
-            throw new ArrayIndexOutOfBoundsException("Error: columns or row does not exit");
+            throw new ArrayIndexOutOfBoundsException("Error: columns or row does not exist");
 
-        return data.get(row).get(col);
+        return data[row][col];
     }
 
     /**
@@ -214,20 +196,20 @@ public class Matrix implements Serializable {
     /**
      * Randomizes entire matrix between -1 and 1
      */
-    public void randomizeValues() {
+    void randomizeValues() {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                setValue(i, j, random.nextDouble() * 2 - 1);
+                randomizeValue(i, j);
             }
         }
     }
 
     /**
      * Randomizes single point to a value between -1 and 1
-     * @param row the rowSS
+     * @param row the row
      * @param col the column
      */
-    public void randomizeValue(int row, int col) {
+    private void randomizeValue(int row, int col) {
         setValue(row, col, random.nextDouble() * 2 -1);
     }
 
@@ -269,44 +251,42 @@ public class Matrix implements Serializable {
      * @return true if valid matrix, false otherwise
      */
     public Boolean isValid() {
-        boolean hasNull = false;
-
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                if (getValue(i, j) == null) {
-                   hasNull = true;
+                   return false;
                }
             }
         }
-
-        return !hasNull;
+        return true;
     }
 
     /**
-     * Custom matrix toString showing the matrix
-     * @return matrix ArrayList
+     * toString Method for Matrix
      */
     @Override
     public String toString() {
-        return data.toString();
-    }
-
-    /**
-     * Prints the Matrix is a nicer view
-     */
-    public void print() {
-        for (int i = 0; i < rows; i++) {
-            System.out.println(data.get(i));
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < rows; i++){
+            if (i != 0) {
+                result.append("\n");
+            }
+            result.append(Arrays.toString(data[i]));
         }
+        return result.toString();
     }
 
     /**
      * Checks that two matrix's are equal
-     * @param matrix another matrix
+     * @param obj another matrix
      * @return true if equal, false otherwise
      */
-    public Boolean equals(Matrix matrix) {
+    @Override
+    public boolean equals(Object obj) {
+        if (getClass() != obj.getClass())
+            return false;
 
+        Matrix matrix = (Matrix)obj;
         if (rows != matrix.rows || columns != matrix.columns)
             return false;
 

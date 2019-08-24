@@ -29,6 +29,7 @@ public class NeuralNetwork implements Serializable{
     // Array at index 0 is hidden, index size - 1 is output
     private Matrix[] bias;
 
+    //Activation Functions
     private static Sigmoid sigmoid = new Sigmoid();
     private static DSigmoid dSigmoid = new DSigmoid();
 
@@ -76,14 +77,12 @@ public class NeuralNetwork implements Serializable{
         weights = new Matrix[size - 1];
         for (int i = 0; i < weights.length; i++) {
             weights[i] = new Matrix(nodes[i + 1], nodes[i]);
-            weights[i].randomizeValues();
         }
 
         // initialize the bias
         bias = new Matrix[size - 1];
         for (int i = 0; i < bias.length; i++) {
             bias[i] = new Matrix(nodes[i + 1], 1);
-            bias[i].randomizeValues();
         }
 
         this.learningRate = learningRate;
@@ -329,7 +328,7 @@ class Sigmoid implements Function<Double, Double> {
 }
 
 /**
- * Gets the derivative of any already sigmoid data
+ * Gets the derivative of any already sigmoid data.
  */
 class DSigmoid implements Function<Double, Double> {
     @Override

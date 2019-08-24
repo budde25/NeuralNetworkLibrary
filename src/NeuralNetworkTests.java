@@ -6,18 +6,6 @@ class NeuralNetworkTests {
         NeuralNetwork nn = new NeuralNetwork(2, new int[] {4, 4}, 1, 0.1);
         Random random = new Random();
 
-        for (int i = 0; i < 50000; i++) {
-            int a = random.nextInt(2);
-            int b = random.nextInt(2);
-            ArrayList<Double> inputs = new ArrayList<>();
-            ArrayList<Double> targets = new ArrayList<>();
-            inputs.add((double)a);
-            inputs.add((double)b);
-            targets.add((double)answer(a,b));
-
-            nn.trainDouble(inputs, targets);
-        }
-
         ArrayList<Double> in = new ArrayList<>();
         in.add((double)1);
         in.add((double)1);
@@ -34,6 +22,20 @@ class NeuralNetworkTests {
         in.add((double)0);
         in.add((double)1);
         System.out.println(nn.feedforward(in));
+
+        for (int i = 0; i < 50000; i++) {
+            int a = random.nextInt(2);
+            int b = random.nextInt(2);
+            ArrayList<Double> inputs = new ArrayList<>();
+            ArrayList<Double> targets = new ArrayList<>();
+            inputs.add((double)a);
+            inputs.add((double)b);
+            targets.add((double)answer(a,b));
+
+            nn.trainDouble(inputs, targets);
+        }
+
+
         System.out.println("result after loading");
         in = new ArrayList<>();
         in.add((double)1);
