@@ -196,7 +196,7 @@ public class Matrix implements Serializable {
     /**
      * Randomizes entire matrix between -1 and 1
      */
-    void randomizeValues() {
+    private void randomizeValues() {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 randomizeValue(i, j);

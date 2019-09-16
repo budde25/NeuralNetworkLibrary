@@ -7,24 +7,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3b051cb4-16b1-4e03-9b29-490929951049" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/NeuralHelper/NeuralHelper.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GeneticNetwork.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/MatrixTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Processing.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Processing.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/MatrixADT.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NeuralHelper.iml" beforeDir="false" afterPath="$PROJECT_DIR$/NeuralHelper.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/NeuralHelper/DSigmoid.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/NeuralHelper/DSigmoid.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/NeuralHelper/Matrix.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/NeuralHelper/Matrix.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/NeuralHelper/MatrixTests.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/NeuralHelper/NeuralNetwork.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/NeuralHelper/NeuralNetwork.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/NeuralHelper/NeuralNetworkTests.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/NeuralHelper/NeuralNetworkTests.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/NeuralHelper/Sigmoid.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/NeuralHelper/Sigmoid.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Matrix.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Matrix.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MatrixTests.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/NeuralNetwork.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/NeuralNetwork.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/NeuralNetworkTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/NeuralNetworkTests.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -60,6 +46,7 @@
       <list>
         <option value="JUnit5 Test Class" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -67,7 +54,9 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1PG5WEsuwWmknakdWzbuecM60GB" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="PropertiesComponent">
     <property name="Downloaded.Files.Path.Enabled" value="true" />
     <property name="Repository.Attach.Annotations" value="false" />
@@ -80,7 +69,7 @@
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit5" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5" value="" />
     <property name="create.test.in.the.same.root" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../NeuralNumbers" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.20398593" />
@@ -218,6 +207,7 @@
       <workItem from="1565986090259" duration="11203000" />
       <workItem from="1566327579118" duration="1237000" />
       <workItem from="1566616068602" duration="3083000" />
+      <workItem from="1568594069262" duration="3417000" />
     </task>
     <servers />
   </component>
