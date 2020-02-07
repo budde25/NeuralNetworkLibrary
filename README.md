@@ -5,7 +5,8 @@ activation function.
 
 ## Installation
 
-Add the provided jar as a library
+Add the provided jar as a library.  
+[Latest Release](https://github.com/budde25/NeuralNetworkLibrary/releases/latest)
 
 ## Usage
 `NeuralNetwork(int inputs, int[] hidden nodes, int outputs, double learningRate)`  
