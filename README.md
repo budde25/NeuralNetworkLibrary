@@ -1,4 +1,7 @@
 # Neural Network Library
+
+ [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)  
+
 A custom Java library for building simple neural networks. It can uses for supervised learning and a feed forward algorithm.
 Supports custom ranges of inputs, hidden nodes, and outputs with options to change the learning rate. It uses sigmoid as its
 activation function. Support for saving a loading trained networks.
